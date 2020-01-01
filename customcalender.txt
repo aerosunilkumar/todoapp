@@ -1,0 +1,126 @@
+<h1>Application Management Home</h1>
+
+<div class="container col-sm-12 col-md-12 col-lg-12 col-xs-12">
+    <div class="card">
+        <h3 class="card-header" id="monthAndYear"></h3>
+        <table class="table table-bordered table-responsive-sm" id="calendar">
+            <thead>
+                <tr>
+                    <th>Sun</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                </tr>
+            </thead>
+
+            <tbody id="calendar-body">
+            </tbody>
+        </table>
+
+        <br />
+
+    </div>
+    <div>
+        <form class="form-inline">
+            <label class="lead mr-2 ml-2" for="month">Pay Period </label>
+            <input id="startDate" type="date" />
+
+
+            <label for="year"></label>
+            <input id="endDate" type="date" />
+            <button type="button" onclick="GeneratePayPeriodCalender()">Generate Pay Period Calender</button>
+        </form>
+    </div>
+</div>
+<!--<button name="jump" onclick="jump()">Go</button>-->
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"
+        integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ"
+        crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+    let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    function getDates(){
+        var start = new Date(document.querySelector('[id="startDate"]').value),
+            end = new Date(document.querySelector('[id="endDate"]').value),
+            year = start.getFullYear(),
+            month = start.getMonth(),
+            day = start.getDate(),
+            dates = [start];
+
+        while (dates[dates.length - 1] < end) {
+            day = day + 1;
+            if (new Date(year, month, day) < end) {
+                dates.push(new Date(year, month, day));
+            }
+            else {
+                break;
+            }
+        }
+        return dates;
+    }
+
+    function GeneratePayPeriodCalender() {
+        debugger;
+        var startDate = new Date($("#startDate").val());
+        var endDate = new Date($("#endDate").val());
+        var tbl = document.getElementById("calendar-body");
+        tbl.innerHTML = "";
+        var monthId = startDate.getMonth();
+        monthAndYear.innerHTML = months[monthId] + " " + startDate.getFullYear();
+        var dates = getDates();
+        for (var i = 0; i < dates.length; i++) {
+            debugger;
+            if (i == 0) {
+                var row = document.createElement("tr");
+                $("#calendar-body").append(row);
+                var lastRow = $("#calendar-body").find("tr")[$("#calendar-body").find("tr").length - 1];
+                if (dates[i].getDay() == 0) {
+                    //NORMAL ROW start from 0 and end with 7
+                    var cell = document.createElement("td");
+                    cellText = document.createTextNode(dates[i].getDate());
+                    cell.appendChild(cellText);
+                    $(lastRow).append(cell);
+                }
+                else {
+                    //need to fill empty cells
+                    for (var j = 0; j < dates[i].getDay(); j++) {
+                        var cell = document.createElement("td");
+                        cellText = document.createTextNode("");
+                        cell.appendChild(cellText);
+                        $(lastRow).append(cell);
+                    }
+                    var cell = document.createElement("td");
+                    cellText = document.createTextNode(dates[i].getDate());
+                    cell.appendChild(cellText);
+                    $(lastRow).append(cell);
+                }
+            }
+            else {
+                var lastRow = $("#calendar-body").find("tr")[$("#calendar-body").find("tr").length - 1];
+                if ($(lastRow).find("td").length < 7) {
+                    var cell = document.createElement("td");
+                    cellText = document.createTextNode(dates[i].getDate());
+                    cell.appendChild(cellText);
+                    $(lastRow).append(cell);
+                }
+                else {
+                    var row = document.createElement("tr");
+                    $("#calendar-body").append(row);
+                    var lastRow = $("#calendar-body").find("tr")[$("#calendar-body").find("tr").length - 1];
+                    var cell = document.createElement("td");
+                    cellText = document.createTextNode(dates[i].getDate());
+                    cell.appendChild(cellText);
+                    $(lastRow).append(cell);
+                }
+            }
+            
+        }
+    }
+</script>
